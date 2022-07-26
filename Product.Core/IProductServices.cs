@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Product.Core
 {
     /// <summary>
-    /// Define the signature for the product entity.
+    /// This interface is use to define teh signature of the actions.
     /// </summary>
     public interface IProductServices
     {
@@ -19,10 +19,9 @@ namespace Product.Core
 
         void EditProduct(ProductDB.Product product);
 
-        List<ProductDB.Product> FilterProducts(string name,string color,string size, double price);
+        List<ProductDB.Product> SearchProducts(string search);
 
-
-
+        List<ProductDB.Product> OrderByProducts(int type);
 
     }
 }

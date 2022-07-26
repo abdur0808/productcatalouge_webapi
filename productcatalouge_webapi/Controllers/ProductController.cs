@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace productcatalouge_webapi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
 
@@ -33,7 +33,7 @@ namespace productcatalouge_webapi.Controllers
 
 
         /// <summary>
-        /// This method is use to get all the products.
+        /// This method is use to get all the products. Url: https://localhost:5001/api/product
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -46,9 +46,24 @@ namespace productcatalouge_webapi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error is method name : GetProduct " + ex.Message);
-                return BadRequest("Error has Occurred.Please contact administrator");
+                return BadRequest("Error has Occurred.Please contact administrator.!!!");
             }
-            
+
+        }
+        [HttpGet]
+        [Route("orderbyproducts/{type}", Name = "orderbyproducts")]
+        //https://localhost:5001/api/product/orderbyproducts/namedesc
+        public IActionResult OrderByProducts(int type)
+        {
+            try
+            {
+                return Ok(_productServices.OrderByProducts(type));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error is method name : OrderByProducts " + ex.Message);
+                return BadRequest("Error has Occurred.Please contact administrator.!!!");
+            }
         }
 
         /// <summary>
@@ -56,7 +71,7 @@ namespace productcatalouge_webapi.Controllers
         /// </summary>
         /// <param name="id">int</param>
         /// <returns></returns>
-        [HttpGet("{id}", Name = "GetProduct")]
+        [HttpGet("{id}")]
         public IActionResult GetProduct(int id)
         {
             try
@@ -66,30 +81,29 @@ namespace productcatalouge_webapi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error is method name : GetProductbyid " + ex.Message);
-                return BadRequest("Error has Occurred.Please contact administrator");
+                return BadRequest("Error has Occurred.Please contact administrator.!!!");
             }
-           
+
         }
 
         /// <summary>
-        /// This method is use to filter the products.
+        /// This method is use to search the products. url:https://localhost:5001/api/product/serachproducts/value
         /// </summary>
-        /// <param name="name">string</param>
-        /// <param name="color">string</param>
-        /// <param name="size">string</param>
-        /// <param name="price">string</param>
+        /// <param search="search">string</param>
+
         /// <returns></returns>
-        [HttpGet("{name?}/{color?}/{size?}/{price:double?}")]
-        public IActionResult FilterProducts(string name="", string color = "", string size = "", double price=0.0)
+        [HttpGet]
+        [Route("serachproducts/{search?}", Name = "serachproducts")]
+        public IActionResult SearchProduct(string search = "")
         {
             try
             {
-                return Ok(_productServices.FilterProducts(name, color, size, price));
+                return Ok(_productServices.SearchProducts(search));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error is method name : FilterProducts " + ex.Message);
-                return BadRequest("Error has Occurred.Please contact administrator");
+                _logger.LogError("Error is method name : SearchProducts " + ex.Message);
+                return BadRequest("Error has Occurred.Please contact administrator.!!!");
             }
         }
 
@@ -109,7 +123,7 @@ namespace productcatalouge_webapi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error is method name : CreateProduct " + ex.Message);
-                return BadRequest("Error has Occurred.Please contact administrator");
+                return BadRequest("Error has Occurred.Please contact administrator.!!!");
             }
 
         }
@@ -130,7 +144,7 @@ namespace productcatalouge_webapi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error is method name : EditProduct " + ex.Message);
-                return BadRequest("Error has Occurred.Please contact administrator");
+                return BadRequest("Error has Occurred.Please contact administrator.!!!");
             }
         }
 
@@ -150,7 +164,7 @@ namespace productcatalouge_webapi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error is method name : DeleteProduct " + ex.Message);
-                return BadRequest("Error has Occurred.Please contact administrator");
+                return BadRequest("Error has Occurred.Please contact administrator.!!!");
             }
         }
     }

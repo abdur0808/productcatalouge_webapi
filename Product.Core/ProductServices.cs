@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using System.Linq.Expressions;
 
 namespace Product.Core
 {
-    public class ProductServices: IProductServices
+    public class ProductServices : IProductServices
     {
         /// <summary>
         /// Creating the DbContext variable
@@ -34,7 +35,7 @@ namespace Product.Core
 
                 throw new Exception(ex.Message);
             }
-          
+
         }
 
         /// <summary>
@@ -59,16 +60,18 @@ namespace Product.Core
         /// <summary>
         /// This method is use for filter  the products
         /// </summary>
-        /// <param name="name">string</param>
-        /// <param name="color">string</param>
-        /// <param name="size">string</param>
-        /// <param name="price">string</param>
+        /// <param search="search">string</param>
+
         /// <returns> Product collections</returns>
-        public List<ProductDB.Product> FilterProducts( string name, string color, string size, double price)
+        public List<ProductDB.Product> SearchProducts(string seacrch)
         {
             try
             {
-                return _context.Products.Where(p => p.Name == name || p.Color == color || p.Size == size || p.Price == price).ToList();
+                string _search = seacrch.ToLower();
+                return _context.Products.
+                    Where(p => p.Name.Contains(_search) ||
+                          p.Color.Contains(_search) ||
+                          p.Size.Contains(_search)).ToList();
             }
             catch (Exception ex)
             {
@@ -94,6 +97,55 @@ namespace Product.Core
         }
 
         /// <summary>
+        /// This is use for product sorting
+        /// </summary>
+        /// <param name="type">string</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+
+        public List<ProductDB.Product> OrderByProducts(int type)
+        {
+            try
+            {
+                List<ProductDB.Product> response = null;
+                switch (type)
+                {
+
+                    case 1: // Product (A to Z)
+                        response = new List<ProductDB.Product>();
+                        response = _context.Products.OrderBy(p => p.Name).ToList();
+                        break;
+
+                    case 2: // Product (Z to A)
+                        response = new List<ProductDB.Product>();
+
+                        response = _context.Products.OrderByDescending(p => p.Name).ToList();
+                        break;
+                    case 3:// Price (low to high)
+                        response = new List<ProductDB.Product>();
+                        response = _context.Products.OrderBy(p => p.Price).ToList();
+                        break;
+
+                    case 4:// Price (high to low)
+                        response = new List<ProductDB.Product>();
+                        response = _context.Products.OrderByDescending(p => p.Price).ToList();
+                        break;
+                    default:
+                        response = new List<ProductDB.Product>();
+                        response = _context.Products.OrderBy(p => p.Name).ToList();
+                        break;
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        /// <summary>
         /// This method is use for Edit the product
         /// </summary>
         /// <param name="product">entity model</param>
@@ -101,7 +153,8 @@ namespace Product.Core
         {
             try
             {
-                var _product = _context.Products.First(x => x.Id == product.Id);
+                var _product = _context.Products
+                    .First(x => x.Id == product.Id);
                 _product.Name = product.Name;
                 _product.Description = product.Description;
                 _product.Color = product.Color;
